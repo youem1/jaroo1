@@ -20,18 +20,6 @@ import React,{useState} from 'react';
 
 
 
-
-  const set_dimension=()=>{
-    const enteredRow=document.getElementById('row-App').value;
-    const enteredColumn=document.getElementById('column-App').value;
-    setRow(enteredRow);
-    setColumn(enteredColumn);
-    setEnteredColumnRobot(document.getElementById('columnRobot-App').value);
-    setEnteredRowRobot(document.getElementById('rowRobot-App').value);
-    
-    
-  }
-
   const change_state_home=(event)=>{
     if(stateHomes[event.target.id]==true){
       
@@ -48,6 +36,40 @@ import React,{useState} from 'react';
     
   }
 
+
+
+
+
+  const set_dimension=()=>{
+    const enteredRow=document.getElementById('row-App').value;
+    const enteredColumn=document.getElementById('column-App').value;
+    setRow(enteredRow);
+    setColumn(enteredColumn);
+    setEnteredColumnRobot(document.getElementById('columnRobot-App').value);
+    setEnteredRowRobot(document.getElementById('rowRobot-App').value);
+
+
+
+
+  }
+
+
+  let counter=0;
+  for(let i=0;i<row;i++){
+    columnContent[i]=[];
+      for(let j=0;j<column;j++){
+        stateHomes[counter]=true;
+        columnContent[i][j]=(<div style={{width:(100/column)+'%'}} className='homes-App' id={counter++}  onClick={change_state_home}   >({i+1},{j+1})<br/> id:{counter-1}</div>)
+      }
+    rowContent.push(<div style={{height:(83/row)+'vh',minWidth:'25px'}} className='rows-App'>{columnContent[i]}</div>); 
+  }
+
+
+
+  
+
+
+
   let [repeet,setRepeet]=useState(false);
   const set_howWork=()=>{
     setRepeet(!repeet);
@@ -56,34 +78,23 @@ import React,{useState} from 'react';
 
 
 
-  let counter=0;
+    
+    
 
-  for(let i=0;i<row;i++){
-    columnContent[i]=[];
-    
-      for(let j=0;j<column;j++){
-        stateHomes[counter]=true;
-        columnContent[i][j]=(<div style={{width:(100/column)+'%'}} className='homes-App' id={counter++}  onClick={change_state_home}   >({i+1},{j+1})<br/> id:{counter-1}</div>)
-      }
-    
-    rowContent.push(<div style={{height:(83/row)+'vh',minWidth:'25px'}} className='rows-App'>{columnContent[i]}</div>); 
-}
+
+
 
 let text='';
  
 
 
 const cleaning =()=>{
-  
-  
+
   stateHomes[location]=true;
   document.getElementById(location.toString()).className='home-App';
-  
-  move_robot();
-
-
-
-
+  document.getElementById('controlPanel-App').style.backgroundColor='rgb(150, 221, 42)';
+  document.getElementById('terminal').innerHTML=':)خانه تمیز شد';
+  setTimeout(move_robot,700);
 
 }
 const scaning=()=>{
@@ -91,7 +102,9 @@ const scaning=()=>{
   
   
   if(stateHomes[location]==false){
-    console.log('clean here:'+location)
+    console.log('clean here:'+location);
+    document.getElementById('controlPanel-App').style.backgroundColor='rgb(253, 34, 34)';
+    document.getElementById('terminal').innerHTML=':(خانه کثیف می باشد';
     setTimeout(cleaning,1000)
     
 
@@ -110,6 +123,7 @@ const move_right_noscaning=()=>{
   console.log('locati0on is R:'+location);
   text=document.getElementById(location.toString()).innerHTML;
   document.getElementById((location).toString()).innerHTML='<div id="robot"></div>';
+  
   setTimeout(move_robot,500);
 
   
@@ -192,11 +206,13 @@ const move_right_homes=()=>{
       moveRight=false;
       console.log('moveRight:'+moveRight)
       document.getElementById('robot').style.animation='moveDown 0.5s';
+      document.getElementById('terminal').innerHTML='حرکت به سمت پایین';
       setTimeout(move_down,480);
       }
   }else{
 
-    document.getElementById('robot').style.animation='moveRight 0.5s';
+      document.getElementById('robot').style.animation='moveRight 0.5s';
+      document.getElementById('terminal').innerHTML='حرکت به سمت راست'
       setTimeout(move_right,480)
     }
   }else{
@@ -211,11 +227,13 @@ const move_right_homes=()=>{
 
       moveRight=true;
       document.getElementById('robot').style.animation='moveDown 0.5s';
+      document.getElementById('terminal').innerHTML='حرکت به سمت پایین'
       setTimeout(move_down,480);
       }
     }else{
 
       document.getElementById('robot').style.animation='moveLeft 0.5s';
+      document.getElementById('terminal').innerHTML='حرکت به سمت چپ'
       setTimeout(move_left,480);
    }
   
@@ -233,11 +251,13 @@ const move_left_homes=()=>{
       }else{
       moveRight=true;
       document.getElementById('robot').style.animation='moveUp 0.5s';
+      document.getElementById('terminal').innerHTML='حرکت به سمت بالا'
       setTimeout(move_up,480);
       }
     }else{
 
       document.getElementById('robot').style.animation='moveLeft 0.5s';
+      document.getElementById('terminal').innerHTML='حرکت به سمت چپ'
       setTimeout(move_left,480);
    }                        
 
@@ -255,10 +275,12 @@ const move_left_homes=()=>{
       moveRight=false;
       console.log('moveRight:'+moveRight);
       document.getElementById('robot').style.animation='moveUp 0.5s';
+      document.getElementById('terminal').innerHTML='حرکت به سمت بالا'
       setTimeout(move_up,480);
       }
   }else{
     document.getElementById('robot').style.animation='moveRight 0.5s';
+    document.getElementById('terminal').innerHTML='حرکت به سمت راست'
       setTimeout(move_right,480)
       
     }
@@ -277,6 +299,7 @@ const move_back=()=>{
     columnFirstRobot=enteredColumnRobot-1;
     rowFirstRobot=enteredRowRobot;
   }
+  document.getElementById('terminal').innerHTML='درحال برگشت'
     setTimeout(()=>{
       if(columnLocation>(columnFirstRobot)){
         document.getElementById((location).toString()).innerHTML=text;
@@ -414,20 +437,13 @@ const off_robot=()=>{
             
             <div className="setDimension-App" ><button onClick={set_dimension}>اعمال</button></div>
         </div>
-        <div className="controlPanel-App">
+        <div className="controlPanel-App" id='controlPanel-App'>
           <div className='part1'>
             <button onClick={on_robot}>شروع عملیات</button>
           </div>
           <div className="part2">
-            <div className="processoer">
+            <div className="terminal"><h1 id='terminal'></h1></div>
 
-            </div>
-            <div className="sensor">
-
-            </div>
-            <div className="performer">
-
-            </div>
           </div>
         </div>
       </div>
