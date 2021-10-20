@@ -8,7 +8,6 @@ import React,{useState} from 'react';
   let rowContent =[] ;
   let columnContent=[];
   let stateHomes=[];
-  let onRobot=false;
   const [enteredRowRobot,setEnteredRowRobot]=useState(0);
   const [enteredColumnRobot,setEnteredColumnRobot]=useState(0);
   let location=((enteredRowRobot-1)*column)+(enteredColumnRobot*1);
@@ -16,8 +15,6 @@ import React,{useState} from 'react';
   let moveRight=true;
   let moveBack=false;
   let leftHomes=false;
-
-
 
 
   const change_state_home=(event)=>{
@@ -36,10 +33,6 @@ import React,{useState} from 'react';
     
   }
 
-
-
-
-
   const set_dimension=()=>{
     const enteredRow=document.getElementById('row-App').value;
     const enteredColumn=document.getElementById('column-App').value;
@@ -47,8 +40,6 @@ import React,{useState} from 'react';
     setColumn(enteredColumn);
     setEnteredColumnRobot(document.getElementById('columnRobot-App').value);
     setEnteredRowRobot(document.getElementById('rowRobot-App').value);
-
-
 
 
   }
@@ -65,29 +56,9 @@ import React,{useState} from 'react';
   }
 
 
-
   
-
-
-
-  let [repeet,setRepeet]=useState(false);
-  const set_howWork=()=>{
-    setRepeet(!repeet);
-  }
-  
-
-
-
-    
-    
-
-
-
 
 let text='';
- 
-
-
 const cleaning =()=>{
 
   stateHomes[location]=true;
@@ -192,13 +163,12 @@ const move_right_homes=()=>{
 
 
 
-  if(moveRight){                          
-
+  if(moveRight){                  
     if( (((location+1)%column)==0)){
       if(location==(column*row)-1){
         moveBack=true;
         leftHomes=true;
-
+        moveRight=false;
         move_robot()
 
       }else{
@@ -209,8 +179,8 @@ const move_right_homes=()=>{
       document.getElementById('terminal').innerHTML='حرکت به سمت پایین';
       setTimeout(move_down,480);
       }
-  }else{
-
+  
+    }else{
       document.getElementById('robot').style.animation='moveRight 0.5s';
       document.getElementById('terminal').innerHTML='حرکت به سمت راست'
       setTimeout(move_right,480)
@@ -222,6 +192,7 @@ const move_right_homes=()=>{
       if((((location*1)+(column*1)-1))==(column*row)-1){
         moveBack=true;
         leftHomes=true;
+        moveRight=true;
         move_robot()
       }else{
 
@@ -313,8 +284,8 @@ const move_back=()=>{
             document.getElementById((location).toString()).innerHTML=text;
             move_up_noscaning();
           }else{
-            moveRight=false;
             moveBack=false;
+            moveRight=false;
             document.getElementById(location.toString()).innerHTML='<div id="robot"><div/><div id="scan"><div/>'
             setTimeout(scaning,498);
 
@@ -326,91 +297,56 @@ const move_back=()=>{
 
 }
 const  move_robot=()=>{
-  console.log('location is move:'+location)
-if(!(firstLocation==1)  ){
-  if(!leftHomes){
-       move_right_homes();
+
+
+switch (firstLocation){
+
+
+  case 1:
+    if(!leftHomes){
+      move_right_homes();
     }else{
-      if(!moveBack ){
-        move_left_homes();   
-      }else{
-          move_back();
-        }
-  }
-}else{
-  if(!leftHomes){
-    move_right_homes();
-  }else{
-    moveRight=false;
-    move_left_homes();
-  }
-}
-  /*console.log(repeet);
-  if(onRobot){
-  if(repeet){
-    if(moveRight){
-      i+=1;
-      if(i<stateHomes.length){
-        console.log('scaning here:'+i)
-        text=document.getElementById(i.toString()).innerHTML;
-        document.getElementById((i).toString()).innerHTML='<div></div>';
-        setTimeout(scaning.bind(this,i),2000)
-        }else{
-          moveRight=false;
-          document.getElementById((i-1).toString()).innerHTML=text;
-          i-=2;
-          text=document.getElementById(i.toString()).innerHTML;
-          document.getElementById((i).toString()).innerHTML='<div></div>';
-          
-          setTimeout(scaning.bind(this,i),2000)
-        }
-
-    }else{
-      i-=1;
-      if(i>=0){
-        console.log('scaning here:'+i)
-        text=document.getElementById(i.toString()).innerHTML;
-        document.getElementById((i).toString()).innerHTML='<div></div>';
-        
-        setTimeout(scaning.bind(this,i),2000)
-        }else{
-          moveRight=true;
-          setTimeout(scaning.bind(this,++i),2000)
-          text=document.getElementById(i.toString()).innerHTML;
-
-        }
-
-
+      move_left_homes();
     }
+    break ;
 
-  }else{
-    i+=1;
-   
-    if(i<stateHomes.length){
-      console.log('scaning here:'+i)
-      setTimeout(scaning.bind(this,i),2000)
-      text=document.getElementById(i.toString()).innerHTML;
 
-      document.getElementById((i).toString()).innerHTML='<div></div>';
+  case (column*1):
+      if(!leftHomes){
+        move_right_homes();
       }else{
-        setTimeout(()=>{console.log('evry there clean:)')},1000)
-    
+        move_left_homes();
       }
-    }
+    break;
 
-  }*/
+
+  default:
+    if(!leftHomes){
+      move_right_homes();
+      }else{  
+        if(!moveBack ){
+           move_left_homes();   
+            }else{
+              move_back();
+            }
+      }
+
+    break;
+
+}
+
 }
 async function on_robot(){
   location-=1;
   console.log('locati0on is:'+location)
   text=document.getElementById(location.toString()).innerHTML;
   document.getElementById(location.toString()).innerHTML='<div id="robot"><div/><div id="scan"><div/>';
-  onRobot=true;
-  setTimeout(scaning,500)
+  if(firstLocation==column){
+    moveRight=false;
+  }
+  setTimeout(scaning,500);
 }
-const off_robot=()=>{
-  onRobot=false;
-}
+
 
 
   return (
